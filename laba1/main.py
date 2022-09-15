@@ -2,7 +2,6 @@ import asyncio
 from pywebio.input import input
 from pywebio.output import put_info, put_markdown, clear, put_error, put_success
 from pywebio import start_server
-import time
 import json
 
 import random
@@ -91,7 +90,7 @@ numbers_icons = {
 }
 
 
-async def analyze_answer(numbers, numbers_guessed, type):
+def analyze_answer(numbers, numbers_guessed, type):
     if type == "numbers":
         return [
             {
@@ -108,11 +107,11 @@ async def analyze_answer(numbers, numbers_guessed, type):
         ]
 
 
-async def print_nums(numbers, numberscopy, type):
+def print_nums(numbers, numberscopy, type):
     if type == "numbers":
         for number in numberscopy:
             put_markdown(f"{'#' * numbers.index(number)} {number}")
-            await asyncio.sleep(1)
+            asyncio.sleep(1)
             clear()
     elif type == "pictures":
         for number in numberscopy:
@@ -120,22 +119,22 @@ async def print_nums(numbers, numberscopy, type):
                 put_markdown(f"# {number}")
             else:
                 put_markdown(f"{numbers_icons[number]}")
-            await asyncio.sleep(1)
+            asyncio.sleep(1)
             clear()
 
 
-async def number_guessing(name, type):
+def number_guessing(name, type):
 
-    numbers, numberscopy = await generate_numbers(type)
+    numbers, numberscopy = generate_numbers(type)
 
     put_info("Через 8 секунд вам поочередно будут показаны 6 чисел (по 1 секунде на каждое), постарайтесь их запомнить. После этого вам нужно будет ввести числа, которые вы запомните")
-    await asyncio.sleep(8)
+    asyncio.sleep(8)
     clear()
 
-    await print_nums(numbers, numberscopy, type)
+    print_nums(numbers, numberscopy, type)
     while True:
         try:
-            numbers_guessed: str = await input(
+            numbers_guessed: str = input(
                 "Введите числа, которые вы запомнили через пробел: ")
             numbers_guessed = map(int, numbers_guessed.split())
             clear()
@@ -144,11 +143,11 @@ async def number_guessing(name, type):
             clear()
             put_error("Что-то пошло не так, попробуйте еще раз")
 
-    numbers_guessed = await analyze_answer(numbers, numbers_guessed, type)
-    await save_results(name, numbers_guessed, type)
+    numbers_guessed = analyze_answer(numbers, numbers_guessed, type)
+    save_results(name, numbers_guessed, type)
 
 
-async def generate_numbers(type):
+def generate_numbers(type):
     numbers = []
     if type == "numbers":
         for _ in range(6):
@@ -167,7 +166,7 @@ async def generate_numbers(type):
     return numbers, numberscopy
 
 
-async def save_results(name, numbers_guessed, type):
+def save_results(name, numbers_guessed, type):
     if type == "numbers":
         path = "laba1/resultsNum.json"
     elif type == "pictures":
@@ -184,7 +183,7 @@ async def save_results(name, numbers_guessed, type):
         json.dump(results, write_file)
 
 
-async def show_results():
+def show_results():
     path1 = "laba1/resultsNum.json"
     path2 = "laba1/resultsPic.json"
 
@@ -208,12 +207,12 @@ async def show_results():
     )
 
 
-async def main():
-    name: str = await input("Введите имя：")
+def main():
+    name: str = input("Введите имя：")
     if name.lower() == "admin":
-        await show_results()
+        show_results()
     else:
-        await number_guessing(name, "numbers")
-        await number_guessing(name, "pictures")
+        number_guessing(name, "numbers")
+        number_guessing(name, "pictures")
         clear()
         put_success('Спасибо за прохождение опроса')
