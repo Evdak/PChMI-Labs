@@ -217,7 +217,3 @@ async def main():
         await number_guessing(name, "pictures")
         clear()
         put_success('Спасибо за прохождение опроса')
-
-
-if __name__ == '__main__':
-    start_server(main)
