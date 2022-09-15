@@ -207,7 +207,7 @@ def show_results():
     )
 
 
-def main():
+async def main():
     name: str = input("Введите имя：")
     if name.lower() == "admin":
         show_results()
@@ -219,4 +219,4 @@ def main():
 
 
 if __name__ == '__main__':
-    start_server(main, port=443)
+    start_server(main)
